@@ -20,3 +20,7 @@ def test_google_url():
     finally:
         # Quit the driver
         print('Yes')
+
+# Run the test if executed directly
+if __name__ == "__main__":
+    test_google_url()
