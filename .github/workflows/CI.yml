@@ -1,4 +1,4 @@
-name: Google URL Test
+name: Google Navigation Test
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Check out the code
+      # 1. Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -29,6 +29,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. Run the test
+      # 4. Run the Selenium test
       - name: Run Selenium Test
         run: pytest tests/test_google_url.py
