@@ -39,7 +39,14 @@ jobs:
           echo "Installed Google Chrome version: $CHROME_VERSION"
 
           # Fetch the matching ChromeDriver version
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION" || echo "FAILED")
+          
+          # Handle failure to resolve ChromeDriver version
+          if [ "$CHROMEDRIVER_VERSION" = "FAILED" ]; then
+            echo "Failed to fetch matching ChromeDriver version. Exiting."
+            exit 1
+          fi
+
           echo "Matching ChromeDriver version: $CHROMEDRIVER_VERSION"
 
           # Download and install ChromeDriver
