@@ -1,7 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 
 def test_google_url():
     # Configure headless mode for CI environments
@@ -10,9 +9,9 @@ def test_google_url():
     options.add_argument("--no-sandbox")  # Required for CI environments
     options.add_argument("--disable-dev-shm-usage")  # Overcome resource issues
 
-    # Automatically download and manage the correct ChromeDriver version
-    chrome_driver_path = ChromeDriverManager().install()
-    print(f"Resolved ChromeDriver path: {chrome_driver_path}")  # Debug: Output ChromeDriver path
+    # Use the explicitly installed ChromeDriver
+    chrome_driver_path = "/usr/local/bin/chromedriver"  # Path where ChromeDriver was installed
+    print(f"Using ChromeDriver at: {chrome_driver_path}")  # Debug: Output ChromeDriver path
 
     # Initialize WebDriver
     service = Service(chrome_driver_path)
