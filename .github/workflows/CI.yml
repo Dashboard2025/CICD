@@ -39,7 +39,7 @@ jobs:
           echo "Detected Google Chrome version: $CHROME_VERSION"
 
           # Fetch the matching ChromeDriver version
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
           
           # Validate ChromeDriver version resolution
           if [ -z "$CHROMEDRIVER_VERSION" ]; then
