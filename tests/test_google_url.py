@@ -11,7 +11,11 @@ def test_google_url():
     options.add_argument("--disable-dev-shm-usage")  # Overcome resource issues
 
     # Automatically download and manage the correct ChromeDriver version
-    service = Service(ChromeDriverManager().install())
+    chrome_driver_path = ChromeDriverManager().install()
+    print(f"ChromeDriver path: {chrome_driver_path}")  # Debug log to ensure correct binary
+
+    # Initialize WebDriver
+    service = Service(chrome_driver_path)
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
