@@ -23,26 +23,30 @@ jobs:
         with:
           python-version: 3.9
 
-      # 3. Install Google Chrome and ChromeDriver
-      - name: Install Google Chrome and ChromeDriver
+      # 3. Install Google Chrome
+      - name: Install Google Chrome
         run: |
           sudo apt-get update
           sudo apt-get install -y wget unzip
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get install -fy
-          CHROME_VERSION=$(google-chrome --version | grep -oP "\d+\.\d+\.\d+\.\d+")
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
+
+      # 4. Install the matching ChromeDriver version
+      - name: Install ChromeDriver
+        run: |
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
           wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/chromedriver
 
-      # 4. Install dependencies
+      # 5. Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 5. Run the Selenium test
+      # 6. Run Selenium Test
       - name: Run Selenium Test
         run: pytest tests/test_google_url.py
