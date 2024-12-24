@@ -23,25 +23,36 @@ jobs:
         with:
           python-version: 3.9
 
-      # 3. Install Specific Version of Google Chrome
+      # 3. Install Google Chrome
       - name: Install Google Chrome
         run: |
           sudo apt-get update
           sudo apt-get install -y wget unzip
-          # Pin to a specific version of Google Chrome
-          wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.90-1_amd64.deb
-          sudo dpkg -i google-chrome-stable_114.0.5735.90-1_amd64.deb || sudo apt-get install -fy
-          echo "Installed Google Chrome version: $(google-chrome --version)"
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get install -fy
 
-      # 4. Install Matching ChromeDriver
-      - name: Install ChromeDriver
+      # 4. Detect Google Chrome Version and Install Matching ChromeDriver
+      - name: Install Matching ChromeDriver
         run: |
-          # Download and install the ChromeDriver matching Chrome 114.0.5735.90
-          wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
+          # Get the installed Google Chrome version
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          echo "Detected Google Chrome version: $CHROME_VERSION"
+
+          # Fetch the matching ChromeDriver version
+        CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
+          
+          # Validate ChromeDriver version resolution
+          if [ -z "$CHROMEDRIVER_VERSION" ]; then
+            echo "Failed to fetch matching ChromeDriver version. Exiting."
+            exit 1
+          fi
+          echo "Matching ChromeDriver version: $CHROMEDRIVER_VERSION"
+
+          # Download and install ChromeDriver
+          wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/chromedriver
-          echo "Installed ChromeDriver version: 114.0.5735.90"
 
       # 5. Install Python dependencies
       - name: Install dependencies
