@@ -1,16 +1,17 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 def test_google_url():
     # Configure headless mode for CI environments
     options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--headless")  # Run without a UI
+    options.add_argument("--no-sandbox")  # Required for CI environments
+    options.add_argument("--disable-dev-shm-usage")  # Overcome resource issues
 
-    # Initialize WebDriver
-    service = Service("/usr/local/bin/chromedriver")
+    # Automatically download and manage the correct ChromeDriver version
+    service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
@@ -22,7 +23,6 @@ def test_google_url():
 
         # Verify the URL
         assert current_url == "https://www.google.com/", f"Test Failed! Current URL is {current_url}"
-
         print("Test Passed! Navigated to the correct URL.")
     finally:
         # Quit the browser
