@@ -1,3 +1,40 @@
+# name: Google Navigation Test
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   selenium-test:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       # 1. Checkout the repository
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+
+#       # 2. Set up Python
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: 3.9
+
+#       # 3. Install dependencies
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install -r requirements.txt
+
+#       # 4. Run the Selenium test
+#       - name: Run Selenium Test
+#         run: pytest tests/test_google_url.py
+
+
+
 name: Google Navigation Test
 
 on:
@@ -23,12 +60,18 @@ jobs:
         with:
           python-version: 3.9
 
-      # 3. Install dependencies
+      # 3. Install Google Chrome
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      # 4. Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. Run the Selenium test
+      # 5. Run the Selenium test
       - name: Run Selenium Test
         run: pytest tests/test_google_url.py
