@@ -12,7 +12,7 @@ def test_google_url():
 
     # Automatically download and manage the correct ChromeDriver version
     chrome_driver_path = ChromeDriverManager().install()
-    print(f"ChromeDriver path: {chrome_driver_path}")  # Debug log to ensure correct binary
+    print(f"Resolved ChromeDriver path: {chrome_driver_path}")  # Debug: Output ChromeDriver path
 
     # Initialize WebDriver
     service = Service(chrome_driver_path)

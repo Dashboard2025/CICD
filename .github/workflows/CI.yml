@@ -29,11 +29,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. Debug WebDriver Manager Files
+      # 4. Install ChromeDriver
+      - name: Install ChromeDriver
+        run: |
+          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
+          wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/chromedriver
+
+      # 5. Debug WebDriver Manager Downloads
       - name: Debug WebDriver Manager Files
         run: |
-          ls -R ~/.wdm/  # List files downloaded by WebDriver Manager
+          find /home/runner -type d -name "chromedriver" -print || echo "No chromedriver found"
 
-      # 5. Run the Selenium test
+      # 6. Run Selenium Test
       - name: Run Selenium Test
         run: pytest tests/test_google_url.py
