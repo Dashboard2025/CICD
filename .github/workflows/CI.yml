@@ -31,22 +31,21 @@ jobs:
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get install -fy
 
-      # 4. Install Matching ChromeDriver
+      # 4. Detect Google Chrome Version and Install Matching ChromeDriver
       - name: Install Matching ChromeDriver
         run: |
           # Get the installed Google Chrome version
           CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          echo "Installed Google Chrome version: $CHROME_VERSION"
+          echo "Detected Google Chrome version: $CHROME_VERSION"
 
           # Fetch the matching ChromeDriver version
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION" || echo "FAILED")
+          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
           
-          # Handle failure to resolve ChromeDriver version
-          if [ "$CHROMEDRIVER_VERSION" = "FAILED" ]; then
+          # Validate ChromeDriver version resolution
+          if [ -z "$CHROMEDRIVER_VERSION" ]; then
             echo "Failed to fetch matching ChromeDriver version. Exiting."
             exit 1
           fi
-
           echo "Matching ChromeDriver version: $CHROMEDRIVER_VERSION"
 
           # Download and install ChromeDriver
