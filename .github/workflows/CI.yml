@@ -1,4 +1,4 @@
-name: Google Navigation Test
+name: Edge Navigation Test
 
 on:
   push:
@@ -23,41 +23,28 @@ jobs:
         with:
           python-version: 3.9
 
-      # 3. Install the Latest Google Chrome
-      - name: Install Google Chrome
+      # 3. Install Microsoft Edge
+      - name: Install Microsoft Edge
         run: |
           sudo apt-get update
           sudo apt-get install -y wget unzip
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get install -fy
-          echo "Installed Google Chrome version: $(google-chrome --version)"
+          # Install Edge browser
+          wget https://packages.microsoft.com/keys/microsoft.asc -O- | sudo gpg --dearmor > /usr/share/keyrings/microsoft.gpg
+          sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list'
+          sudo apt-get update
+          sudo apt-get install -y microsoft-edge-stable
+          echo "Installed Microsoft Edge version: $(microsoft-edge --version)"
 
-      # 4. Detect Google Chrome Version and Install Matching ChromeDriver
-      - name: Install Matching ChromeDriver
+      # 4. Install Edge WebDriver
+      - name: Install Edge WebDriver
         run: |
-          # Get the installed Google Chrome version
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          echo "Detected Google Chrome version: $CHROME_VERSION"
-
-          # Extract the major version (e.g., 114 from 114.0.5735.90)
-          CHROME_MAJOR_VERSION=$(echo "$CHROME_VERSION" | cut -d. -f1)
-          echo "Detected major version: $CHROME_MAJOR_VERSION"
-
-          # Fetch the matching ChromeDriver version
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAJOR_VERSION")
-
-          # Validate ChromeDriver version resolution
-          if [ -z "$CHROMEDRIVER_VERSION" ]; then
-            echo "Failed to fetch matching ChromeDriver version for Chrome $CHROME_MAJOR_VERSION. Exiting."
-            exit 1
-          fi
-          echo "Matching ChromeDriver version: $CHROMEDRIVER_VERSION"
-
-          # Download and install ChromeDriver
-          wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/chromedriver
+          # Install Edge WebDriver for the installed Edge version
+          EDGE_VERSION=$(microsoft-edge --version | grep -oP '\d+\.\d+\.\d+')
+          echo "Detected Edge version: $EDGE_VERSION"
+          wget https://msedgedriver.azureedge.net/$EDGE_VERSION/edgedriver_linux64.zip
+          unzip edgedriver_linux64.zip
+          sudo mv msedgedriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/msedgedriver
 
       # 5. Install Python dependencies
       - name: Install dependencies
@@ -67,4 +54,4 @@ jobs:
 
       # 6. Run Selenium Test
       - name: Run Selenium Test
-        run: pytest tests/test_google_url.py
+        run: pytest tests/test_edge_url.py
