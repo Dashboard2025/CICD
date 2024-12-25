@@ -1,4 +1,4 @@
-name: Edge Navigation Test
+name: Python CI for Google Check
 
 on:
   push:
@@ -9,49 +9,22 @@ on:
       - main
 
 jobs:
-  selenium-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the repository
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      # 2. Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
 
-      # 3. Install Microsoft Edge
-      - name: Install Microsoft Edge
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip
-          # Install Edge browser
-          wget https://packages.microsoft.com/keys/microsoft.asc -O- | sudo gpg --dearmor > /usr/share/keyrings/microsoft.gpg
-          sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list'
-          sudo apt-get update
-          sudo apt-get install -y microsoft-edge-stable
-          echo "Installed Microsoft Edge version: $(microsoft-edge --version)"
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      # 4. Install Edge WebDriver
-      - name: Install Edge WebDriver
-        run: |
-          # Install Edge WebDriver for the installed Edge version
-          EDGE_VERSION=$(microsoft-edge --version | grep -oP '\d+\.\d+\.\d+')
-          echo "Detected Edge version: $EDGE_VERSION"
-          wget https://msedgedriver.azureedge.net/$EDGE_VERSION/edgedriver_linux64.zip
-          unzip edgedriver_linux64.zip
-          sudo mv msedgedriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/msedgedriver
-
-      # 5. Install Python dependencies
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install selenium pytest
-
-      # 6. Run Selenium Test
-      - name: Run Selenium Test
-        run: pytest tests/test_edge_url.py
+    - name: Run Selenium Test
+      run: python test_google_url.py
