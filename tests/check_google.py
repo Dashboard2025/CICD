@@ -27,9 +27,6 @@
 
 # if __name__ == "__main__":
 #     test_google_url()
-
-
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -37,9 +34,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 def test_google_url():
     options = Options()
-    # Removed headless mode to allow browser opening
+    options.add_argument("--headless")  # Run in headless mode
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
 
     # Initialize WebDriver
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
