@@ -27,4 +27,4 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run Selenium Test
-      run: python test_google_url.py
+      run: python tests/check_google.py
