@@ -34,7 +34,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 def test_google_url():
     options = Options()
-    options.add_argument("--headless")  # Run in headless mode
+    # options.add_argument("--headless")  # Run in headless mode
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
